@@ -1,13 +1,47 @@
 "use server";
 
+import type { Session, User } from "@supabase/supabase-js";
 import { createClient } from "@workspace/auth/utils/server";
+import { redirect } from "next/navigation";
 
-export async function handleEmailPassLoginAction(email: string, pass: string) {
+export async function sendOtpViaEmail(email: string): Promise<{
+	error: string | undefined;
+	data: { user: User | null; session: Session | null };
+}> {
 	const supabase = createClient();
-	const { error, data } = await supabase.auth.signUp({
+	const { error, data } = await supabase.auth.signInWithOtp({ email });
+
+	return {
+		error: error?.message,
+		data: data,
+	};
+}
+
+export async function verifyOtp(
+	otp: string,
+	email: string,
+): Promise<{
+	error: string | undefined;
+	data: { user: User | null; session: Session | null };
+}> {
+	const supabase = createClient();
+	const { error, data } = await supabase.auth.verifyOtp({
 		email,
-		password: pass,
+		token: otp,
+		type: "email",
 	});
 
-	console.log(error, data);
+	return {
+		error: error?.message,
+		data: data,
+	};
+}
+
+export async function signOut(): Promise<void> {
+	const supabase = createClient();
+	const { error } = await supabase.auth.signOut();
+
+	if (!error) {
+		redirect("/login");
+	}
 }

@@ -59,6 +59,7 @@ const config = {
 			},
 			animation: {
 				"caret-blink": "caret-blink 1.25s ease-out infinite",
+				"animate_spin-fast": "spin 0.5s linear infinite",
 			},
 		},
 	},
