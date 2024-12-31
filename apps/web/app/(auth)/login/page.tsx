@@ -62,7 +62,7 @@ export default function LoginPage() {
 				<p className={"text-muted-foreground"}>
 					Forgot Password ?{" "}
 					<Link
-						href={"/auth/register"}
+						href={"/reset-password"}
 						className={"underline underline-offset-4 text-primary"}
 					>
 						Reset Password
@@ -71,7 +71,7 @@ export default function LoginPage() {
 				<p className={"text-muted-foreground"}>
 					Don't have an account?{" "}
 					<Link
-						href={"/auth/register"}
+						href={"/signup"}
 						className={"underline underline-offset-4 text-primary"}
 					>
 						Sign Up

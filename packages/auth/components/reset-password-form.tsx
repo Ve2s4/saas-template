@@ -17,7 +17,26 @@ import { Input } from "@workspace/ui/components/input";
 
 const formSchema = z.object({
 	email: z.string().email({ message: "Invalid email address." }),
+});
+
+const newPasswordFormSchema = z.object({
 	password: z
+		.string()
+		.min(8, { message: "Password must be at least 8 characters long." })
+		.regex(/[a-z]/, {
+			message: "Password must contain at least one lowercase letter.",
+		})
+		.regex(/[A-Z]/, {
+			message: "Password must contain at least one uppercase letter.",
+		})
+		.regex(/[0-9]/, { message: "Password must contain at least one number." })
+		.regex(/[^a-zA-Z0-9]/, {
+			message: "Password must contain at least one special character.",
+		})
+		.refine((val) => !/\b(john|doe|name)\b/i.test(val), {
+			message: "Password must not contain names.",
+		}),
+	confirmPassword: z
 		.string()
 		.min(8, { message: "Password must be at least 8 characters long." })
 		.regex(/[a-z]/, {
@@ -35,23 +54,31 @@ const formSchema = z.object({
 		}),
 });
 
-interface ILoginFormProps {
-	handleEmailPassLogin: (values: { email: string; password: string }) => void;
+interface IResetPasswordFormProps {
+	handleResetPassword: (values: { email: string }) => void;
 }
 
-export function LoginForm({ handleEmailPassLogin }: ILoginFormProps) {
+interface INewPasswordFormProps {
+	handleNewPassword: (values: {
+		password: string;
+		confirmPassword: string;
+	}) => void;
+}
+
+export function ResetPasswordForm({
+	handleResetPassword,
+}: IResetPasswordFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: "",
-			password: "",
 		},
 	});
 
 	return (
 		<Form {...form}>
 			<form
-				onSubmit={form.handleSubmit(handleEmailPassLogin)}
+				onSubmit={form.handleSubmit(handleResetPassword)}
 				className={"flex flex-col gap-4"}
 			>
 				<FormField
@@ -67,14 +94,46 @@ export function LoginForm({ handleEmailPassLogin }: ILoginFormProps) {
 						</FormItem>
 					)}
 				/>
+				<Button type="submit">Submit</Button>
+			</form>
+		</Form>
+	);
+}
+
+export function NewPasswordForm({ handleNewPassword }: INewPasswordFormProps) {
+	const form = useForm<z.infer<typeof newPasswordFormSchema>>({
+		resolver: zodResolver(newPasswordFormSchema),
+		defaultValues: {
+			password: "",
+			confirmPassword: "",
+		},
+	});
+
+	return (
+		<Form {...form}>
+			<form
+				onSubmit={form.handleSubmit(handleNewPassword)}
+				className={"flex flex-col gap-4"}
+			>
 				<FormField
 					control={form.control}
 					name="password"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>
-								<p>Password</p>
-							</FormLabel>
+							<FormLabel>New Password</FormLabel>
+							<FormControl>
+								<Input type={"password"} {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="confirmPassword"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>Confirm Password</FormLabel>
 							<FormControl>
 								<Input type={"password"} {...field} />
 							</FormControl>

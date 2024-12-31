@@ -23,6 +23,9 @@ export default function RootLayout({
 		<html lang="en" suppressHydrationWarning>
 			<body
 				className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
+				style={{
+					background: "linear-gradient(-135deg, #080C25 0%, #000000 50%)",
+				}}
 			>
 				<Providers>
 					<div className={"flex w-full min-h-svh"}>

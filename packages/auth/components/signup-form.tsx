@@ -33,18 +33,35 @@ const formSchema = z.object({
 		.refine((val) => !/\b(john|doe|name)\b/i.test(val), {
 			message: "Password must not contain names.",
 		}),
+	confirmPassword: z
+		.string()
+		.min(8, { message: "Password must be at least 8 characters long." })
+		.regex(/[a-z]/, {
+			message: "Password must contain at least one lowercase letter.",
+		})
+		.regex(/[A-Z]/, {
+			message: "Password must contain at least one uppercase letter.",
+		})
+		.regex(/[0-9]/, { message: "Password must contain at least one number." })
+		.regex(/[^a-zA-Z0-9]/, {
+			message: "Password must contain at least one special character.",
+		})
+		.refine((val) => !/\b(john|doe|name)\b/i.test(val), {
+			message: "Password must not contain names.",
+		}),
 });
 
-interface ILoginFormProps {
+interface ISignupFormProps {
 	handleEmailPassLogin: (values: { email: string; password: string }) => void;
 }
 
-export function LoginForm({ handleEmailPassLogin }: ILoginFormProps) {
+export function SignupForm({ handleEmailPassLogin }: ISignupFormProps) {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: "",
 			password: "",
+			confirmPassword: "",
 		},
 	});
 
@@ -74,6 +91,21 @@ export function LoginForm({ handleEmailPassLogin }: ILoginFormProps) {
 						<FormItem>
 							<FormLabel>
 								<p>Password</p>
+							</FormLabel>
+							<FormControl>
+								<Input type={"password"} {...field} />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
+				<FormField
+					control={form.control}
+					name="confirmPassword"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>
+								<p>Confirm Password</p>
 							</FormLabel>
 							<FormControl>
 								<Input type={"password"} {...field} />
