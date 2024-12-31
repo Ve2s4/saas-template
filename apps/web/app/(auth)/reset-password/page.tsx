@@ -12,8 +12,23 @@ import {
 	InputOTPSlot,
 	REGEXP_ONLY_DIGITS,
 } from "@workspace/ui/components/input-otp";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
+
+const variants = {
+	initial: { opacity: 0, y: 50 },
+	animate: {
+		opacity: 1,
+		y: 0,
+		transition: { type: "tween", ease: "easeOut", duration: 0.3 },
+	},
+	exit: {
+		opacity: 0,
+		y: -50,
+		transition: { type: "tween", ease: "easeIn", duration: 0.3 },
+	},
+};
 
 const Footer = () => {
 	return (
@@ -67,7 +82,14 @@ export default function ResetPasswordPage() {
 	return (
 		<div className={"w-full md:w-3/5 space-y-4 px-10"}>
 			{stage === 1 && (
-				<>
+				<motion.div
+					key="stage1"
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					variants={variants}
+					className={"space-y-4"}
+				>
 					<div className={"w-full"}>
 						<h1 className="text-3xl font-bold text-center">Enter your email</h1>
 						<p className={"text-muted-foreground text-center"}>
@@ -76,49 +98,67 @@ export default function ResetPasswordPage() {
 					</div>
 					<ResetPasswordForm handleResetPassword={handleResetPassword} />
 					<Footer />
-				</>
+				</motion.div>
 			)}
 			{stage === 2 && (
-				<div className={"flex flex-col items-center gap-4"}>
-					<h1 className="text-3xl font-semibold text-center">
-						Enter the 6-digit code
-					</h1>
-					<p className={"text-muted-foreground text-center"}>
-						We've sent a 6-digit code to your email address{" "}
-						<span className={"border px-1 rounded-lg text-sm font-semibold"}>
-							{userEmail}
-						</span>
-						.
-					</p>
-					<InputOTP
-						maxLength={6}
-						pattern={REGEXP_ONLY_DIGITS}
-						onChange={(value) => value.length === 6 && setStage(3)}
-					>
-						<InputOTPGroup>
-							<InputOTPSlot index={0} />
-							<InputOTPSlot index={1} />
-							<InputOTPSlot index={2} />
-						</InputOTPGroup>
-						<InputOTPSeparator />
-						<InputOTPGroup>
-							<InputOTPSlot index={3} />
-							<InputOTPSlot index={4} />
-							<InputOTPSlot index={5} />
-						</InputOTPGroup>
-					</InputOTP>
-					<Footer />
-				</div>
+				<motion.div
+					key="stage2"
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					variants={variants}
+				>
+					<div className={"flex flex-col items-center gap-4"}>
+						<h1 className="text-3xl font-semibold text-center">
+							Enter the 6-digit code
+						</h1>
+						<p className={"text-muted-foreground text-center"}>
+							We've sent a 6-digit code to your email address{" "}
+							<span className={"border px-1 rounded-lg text-sm font-semibold"}>
+								{userEmail}
+							</span>
+							.
+						</p>
+						<InputOTP
+							maxLength={6}
+							pattern={REGEXP_ONLY_DIGITS}
+							onChange={(value) => value.length === 6 && setStage(3)}
+						>
+							<InputOTPGroup>
+								<InputOTPSlot index={0} />
+								<InputOTPSlot index={1} />
+								<InputOTPSlot index={2} />
+							</InputOTPGroup>
+							<InputOTPSeparator />
+							<InputOTPGroup>
+								<InputOTPSlot index={3} />
+								<InputOTPSlot index={4} />
+								<InputOTPSlot index={5} />
+							</InputOTPGroup>
+						</InputOTP>
+						<Footer />
+					</div>
+				</motion.div>
 			)}
 			{stage === 3 && (
-				<div className={"space-y-4"}>
-					<h1 className="text-3xl font-bold text-center">Enter new password</h1>
-					<p className={"text-muted-foreground text-center"}>
-						Please enter your new password and make sure to remember it
-					</p>
-					<NewPasswordForm handleNewPassword={handleNewPassword} />
-					<Footer />
-				</div>
+				<motion.div
+					key="stage3"
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					variants={variants}
+				>
+					<div className={"space-y-4"}>
+						<h1 className="text-3xl font-bold text-center">
+							Enter new password
+						</h1>
+						<p className={"text-muted-foreground text-center"}>
+							Please enter your new password and make sure to remember it
+						</p>
+						<NewPasswordForm handleNewPassword={handleNewPassword} />
+						<Footer />
+					</div>
+				</motion.div>
 			)}
 		</div>
 	);

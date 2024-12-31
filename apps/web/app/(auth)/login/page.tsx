@@ -3,7 +3,22 @@
 import { handleEmailPassLoginAction } from "@/actions/auth.action";
 import { LoginForm } from "@workspace/auth/components/login-form";
 import { Button } from "@workspace/ui/components/button";
+import { motion } from "motion/react";
 import Link from "next/link";
+
+const variants = {
+	initial: { opacity: 0, y: 50 },
+	animate: {
+		opacity: 1,
+		y: 0,
+		transition: { type: "tween", ease: "easeOut", duration: 0.3 },
+	},
+	exit: {
+		opacity: 0,
+		y: -50,
+		transition: { type: "tween", ease: "easeIn", duration: 0.3 },
+	},
+};
 
 export default function LoginPage() {
 	async function handleEmailPassLogin({
@@ -14,7 +29,14 @@ export default function LoginPage() {
 	}
 
 	return (
-		<div className={"w-full md:w-3/5 space-y-4 px-10"}>
+		<motion.div
+			key="loginPage"
+			initial="initial"
+			animate="animate"
+			exit="exit"
+			variants={variants}
+			className={"w-full md:w-3/5 space-y-4 px-10"}
+		>
 			<div className={"w-full"}>
 				<h1 className="text-3xl font-bold text-center">Welcome Back!</h1>
 				<p className={"text-muted-foreground text-center"}>
@@ -94,6 +116,6 @@ export default function LoginPage() {
 					</Link>
 				</p>
 			</div>
-		</div>
+		</motion.div>
 	);
 }

@@ -10,8 +10,23 @@ import {
 	InputOTPSlot,
 	REGEXP_ONLY_DIGITS,
 } from "@workspace/ui/components/input-otp";
+import { motion } from "motion/react";
 import Link from "next/link";
 import { useState } from "react";
+
+const variants = {
+	initial: { opacity: 0, y: 50 },
+	animate: {
+		opacity: 1,
+		y: 0,
+		transition: { type: "tween", ease: "easeOut", duration: 0.3 },
+	},
+	exit: {
+		opacity: 0,
+		y: -50,
+		transition: { type: "tween", ease: "easeIn", duration: 0.3 },
+	},
+};
 
 export default function SignupPage() {
 	async function handleEmailPassLogin({
@@ -28,7 +43,14 @@ export default function SignupPage() {
 	return (
 		<div className={"w-full md:w-3/5 space-y-4 px-10"}>
 			{stage === 1 ? (
-				<>
+				<motion.div
+					key="stage1"
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					variants={variants}
+					className={"space-y-4"}
+				>
 					<div className={"w-full"}>
 						<h1 className="text-3xl font-bold text-center">
 							Create an account
@@ -101,60 +123,68 @@ export default function SignupPage() {
 							</Link>
 						</p>
 					</div>
-				</>
+				</motion.div>
 			) : (
-				<div className={"flex flex-col items-center gap-4"}>
-					<h1 className="text-3xl font-semibold text-center">
-						Enter the 6-digit code
-					</h1>
-					<p className={"text-muted-foreground text-center"}>
-						We've sent a 6-digit code to your email address{" "}
-						<span className={"border px-1 rounded-lg text-sm font-semibold"}>
-							{userEmail}
-						</span>
-						.
-					</p>
-					<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
-						<InputOTPGroup>
-							<InputOTPSlot index={0} />
-							<InputOTPSlot index={1} />
-							<InputOTPSlot index={2} />
-						</InputOTPGroup>
-						<InputOTPSeparator />
-						<InputOTPGroup>
-							<InputOTPSlot index={3} />
-							<InputOTPSlot index={4} />
-							<InputOTPSlot index={5} />
-						</InputOTPGroup>
-					</InputOTP>
-					<div className={"space-y-4 text-center text-sm font-semibold"}>
-						<p className={"text-muted-foreground"}>
-							Already have an account?{" "}
-							<Link
-								href={"/login"}
-								className={"underline underline-offset-4 text-primary"}
-							>
-								Sign In
-							</Link>
+				<motion.div
+					key="stage2"
+					initial="initial"
+					animate="animate"
+					exit="exit"
+					variants={variants}
+				>
+					<div className={"flex flex-col items-center gap-4"}>
+						<h1 className="text-3xl font-semibold text-center">
+							Enter the 6-digit code
+						</h1>
+						<p className={"text-muted-foreground text-center"}>
+							We've sent a 6-digit code to your email address{" "}
+							<span className={"border px-1 rounded-lg text-sm font-semibold"}>
+								{userEmail}
+							</span>
+							.
 						</p>
-						<p className={"text-muted-foreground leading-5"}>
-							By clicking continue, you agree to our{" "}
-							<Link
-								href={"/auth/register"}
-								className={"underline underline-offset-4 text-primary"}
-							>
-								Terms of Service
-							</Link>{" "}
-							and{" "}
-							<Link
-								href={"/auth/register"}
-								className={"underline underline-offset-4 text-primary"}
-							>
-								Privacy Policy
-							</Link>
-						</p>
+						<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
+							<InputOTPGroup>
+								<InputOTPSlot index={0} />
+								<InputOTPSlot index={1} />
+								<InputOTPSlot index={2} />
+							</InputOTPGroup>
+							<InputOTPSeparator />
+							<InputOTPGroup>
+								<InputOTPSlot index={3} />
+								<InputOTPSlot index={4} />
+								<InputOTPSlot index={5} />
+							</InputOTPGroup>
+						</InputOTP>
+						<div className={"space-y-4 text-center text-sm font-semibold"}>
+							<p className={"text-muted-foreground"}>
+								Already have an account?{" "}
+								<Link
+									href={"/login"}
+									className={"underline underline-offset-4 text-primary"}
+								>
+									Sign In
+								</Link>
+							</p>
+							<p className={"text-muted-foreground leading-5"}>
+								By clicking continue, you agree to our{" "}
+								<Link
+									href={"/auth/register"}
+									className={"underline underline-offset-4 text-primary"}
+								>
+									Terms of Service
+								</Link>{" "}
+								and{" "}
+								<Link
+									href={"/auth/register"}
+									className={"underline underline-offset-4 text-primary"}
+								>
+									Privacy Policy
+								</Link>
+							</p>
+						</div>
 					</div>
-				</div>
+				</motion.div>
 			)}
 		</div>
 	);
